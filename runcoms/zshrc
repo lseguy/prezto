@@ -10,4 +10,24 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
-# Customize to your needs...
+if [ $commands[kubectl] ]; then
+    source <(kubectl completion zsh);
+fi
+
+alias kutail="~/beekeeper/scripts/kutail.sh"
+alias pbcopy="xclip -selection clipboard"
+alias benv="source ~/beekeeper/beekeeper-stack/stack/bin/env"
+alias bstart="pushd ~/beekeeper/beekeeper-stack && pipenv run python2 stack/bin/start.py && popd"
+alias bstop="pushd ~/beekeeper/beekeeper-stack && pipenv run python2 stack/bin/stop.py && popd"
+alias uuid="uuidgen | tr -d '\n' | xclip -sel clip"
+alias docker="sudo docker"
+alias docker-compose="sudo docker-compose"
+alias pbedit="xclip -o -selection clipboard | vipe | xclip -selection clipboard"
+
+token() {
+    openssl rand -base64 48 | tr -d '+/' | cut -c -$1 | tr -d '\n' | xclip -sel clip
+}
+
+psql-dev() {
+    kubectl exec -it $(kubectl get po -l app=postgres --no-headers | cut -d ' ' -f 1) -- psql -U "$1"
+}
